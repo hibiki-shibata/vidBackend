@@ -13,18 +13,21 @@ class StoreVid:
         app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
-    def index(self, request) -> tuple:
+    async def index(self, request) -> tuple:
         videofile = request.files['video']
+
+        isValidFile: bool = await self.validate_file(videofile)
         
-        if self.validate_file(videofile) is not False:
+        if isValidFile is not True:
             return  jsonify({'error': 'No file part in the request'}), 400
         else:
-            return self.store_file(videofile)
+            return await self.store_file(videofile)
 
 
 
-    def validate_file(self, file) -> bool:
-        if 'video' not in file:
+    async def validate_file(self, file) -> bool:
+    
+        if 'video' not in file.content_type:
             return False
         elif file.filename == '':
             return False
@@ -32,7 +35,7 @@ class StoreVid:
             return True
                 
 
-    def store_file(self, file) -> tuple:
+    async def store_file(self, file) -> tuple:
         if file:
             filename = file.filename
             file_path = os.path.join(self.app.config['UPLOAD_FOLDER'], filename)

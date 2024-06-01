@@ -21,6 +21,7 @@
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import asyncio
 
 from videoDataHandler.storeVid import StoreVid
 # import os
@@ -29,9 +30,9 @@ app: Flask = Flask(__name__)
 CORS(app)
 
 @app.route('/upload', methods=['POST'])
-def upload_file() -> jsonify:
+async def upload_file() -> jsonify:
     storevid = StoreVid(app) 
-    return storevid.index(request)
+    return await storevid.index(request)
 
 if __name__ == '__main__':
     app.run(port=4000, debug=True)
