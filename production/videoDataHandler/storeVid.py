@@ -39,7 +39,8 @@ class StoreVid:
 
     async def store_file(self, uploadedFile) -> tuple:
         if uploadedFile:
-            filename = uploadedFile.filename
+            # filename = uploadedFile.filename
+            filename: str = "test.mov"
             # UPLOAD_FOLDER = os.path.dirname(os.path.abspath(__file__))
 
             file_path = os.path.join(self.app.config['UPLOAD_FOLDER'], filename)
