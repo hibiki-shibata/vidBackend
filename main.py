@@ -19,11 +19,11 @@
 
 
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
-import asyncio
+# import asyncio
 
-from videoDataHandler.storeVid import StoreVid
+from production.videoDataHandler.storeVid import StoreVid
 # import os
 
 app: Flask = Flask(__name__)
@@ -33,6 +33,17 @@ CORS(app)
 async def upload_file() -> jsonify:
     storevid = StoreVid(app) 
     return await storevid.index(request)
+
+@app.route('/video', methods=['GET'])
+def get_video():
+    try:
+        print("requst arrived!!!")
+        filename = "test.mov"
+        UPLOAD_FOLDER: str = 'production/Database/uploaded'
+        app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+        return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    except FileNotFoundError:
+        return jsonify({"error": "File not found"}), 404
 
 if __name__ == '__main__':
     app.run(port=4000, debug=True)
